@@ -93,18 +93,6 @@ These are set by the Extension Runtime when it spawns your process. You do **not
 | `EXT_DEV`        | `"true"` in dev mode — disables static UI serving            |
 | `EXT_SERVER_URL` | Tabibu server URL — used only by `sdk.HTTPClient()`          |
 
-### Old vars removed
-
-| Old                    | Replacement                                                      |
-| ---------------------- | ---------------------------------------------------------------- |
-| `TABIBU_URL`           | `EXT_SERVER_URL` (only needed for `HTTPClient()` escape hatch)   |
-| `TABIBU_API_KEY`       | Written to `$EXT_DATA_DIR/.api_key` by the Runtime automatically |
-| `EXT_PORT`             | `EXT_HTTP_PORT`                                                  |
-| `BROKER_URL`           | Removed — events route through the Runtime over stdin            |
-| `BROKER_TYPE`          | Removed                                                          |
-| `EXT_SUBSCRIBE_EVENTS` | Declare in `manifest.toml [[contributes.events]]` instead        |
-| `TABIBU_DEV`           | `EXT_DEV`                                                        |
-
 ---
 
 ## Service layer

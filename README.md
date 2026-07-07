@@ -126,7 +126,7 @@ cfg := sdk.GetConfig()
 shortcode := cfg["shortcode"]
 ```
 
-### `sdk.HTTPClient()` — escape hatch
+### `sdk.HTTPClient()`
 
 Returns a `*client` that is pre-authenticated with a JWT (exchanged from the API key written to `$EXT_DATA_DIR/.api_key`). Use this for Tabibu API calls not yet covered by the service layer.
 
@@ -161,7 +161,7 @@ func (e *MyExtension) OnEvent(ctx context.Context, event sdk.Event) error {
 
 ---
 
-## Dev mode — hot reload
+## Dev mode
 
 ### Go backend
 

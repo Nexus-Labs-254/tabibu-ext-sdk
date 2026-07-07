@@ -1,8 +1,12 @@
 # tabibu-ext-sdk
 
-Go SDK for building Tabibu extensions. Import it in your extension's `main` package, implement the `Extension` interface, and call `sdk.Run`.
+Go SDK for building Tabibu extensions. Import it in your extension's `main` package, implement the `Extension` interface, and call `sdk.Run` or create a new extension with:
 
-Extensions run as native child processes managed by the Tabibu server — the same model VS Code uses for its extensions. There are no Docker requirements, no broker credentials, and no direct database access. The SDK handles all IPC and lifecycle details.
+```bash
+tabibu extension init my-extension
+```
+
+Extensions run as native child processes managed by the Tabibu server — a similar model VS Code uses for its extensions. The SDK handles all IPC and lifecycle details.
 
 ---
 
@@ -81,25 +85,25 @@ func (e *MyExtension) OnConfigUpdate(ctx context.Context, cfg sdk.Config) error 
 
 These are set by the Extension Runtime when it spawns your process. You do **not** set them yourself in production; in dev mode, put them in `.env`:
 
-| Variable | Description |
-|---|---|
-| `EXT_NAME` | Extension name (matches `manifest.toml`) |
-| `EXT_HTTP_PORT` | Port for the Pine HTTP server (WebView and extension routes) |
-| `EXT_DATA_DIR` | Persistent data directory for this extension |
-| `EXT_DEV` | `"true"` in dev mode — disables static UI serving |
-| `EXT_SERVER_URL` | Tabibu server URL — used only by `sdk.HTTPClient()` |
+| Variable         | Description                                                  |
+| ---------------- | ------------------------------------------------------------ |
+| `EXT_NAME`       | Extension name (matches `manifest.toml`)                     |
+| `EXT_HTTP_PORT`  | Port for the Pine HTTP server (WebView and extension routes) |
+| `EXT_DATA_DIR`   | Persistent data directory for this extension                 |
+| `EXT_DEV`        | `"true"` in dev mode — disables static UI serving            |
+| `EXT_SERVER_URL` | Tabibu server URL — used only by `sdk.HTTPClient()`          |
 
 ### Old vars removed
 
-| Old | Replacement |
-|---|---|
-| `TABIBU_URL` | `EXT_SERVER_URL` (only needed for `HTTPClient()` escape hatch) |
-| `TABIBU_API_KEY` | Written to `$EXT_DATA_DIR/.api_key` by the Runtime automatically |
-| `EXT_PORT` | `EXT_HTTP_PORT` |
-| `BROKER_URL` | Removed — events route through the Runtime over stdin |
-| `BROKER_TYPE` | Removed |
-| `EXT_SUBSCRIBE_EVENTS` | Declare in `manifest.toml [[contributes.events]]` instead |
-| `TABIBU_DEV` | `EXT_DEV` |
+| Old                    | Replacement                                                      |
+| ---------------------- | ---------------------------------------------------------------- |
+| `TABIBU_URL`           | `EXT_SERVER_URL` (only needed for `HTTPClient()` escape hatch)   |
+| `TABIBU_API_KEY`       | Written to `$EXT_DATA_DIR/.api_key` by the Runtime automatically |
+| `EXT_PORT`             | `EXT_HTTP_PORT`                                                  |
+| `BROKER_URL`           | Removed — events route through the Runtime over stdin            |
+| `BROKER_TYPE`          | Removed                                                          |
+| `EXT_SUBSCRIBE_EVENTS` | Declare in `manifest.toml [[contributes.events]]` instead        |
+| `TABIBU_DEV`           | `EXT_DEV`                                                        |
 
 ---
 
@@ -182,6 +186,7 @@ tabibu server start --dev --ext-dev-dir ./path/to/my-extension
 ```
 
 the server:
+
 1. Reads `manifest.toml` from the dev path
 2. Registers the extension in the DB (idempotent)
 3. Spawns `go run .` in the source directory with `EXT_DEV=true`
@@ -274,6 +279,7 @@ tabibu extension install my-extension
 ```
 
 The `.tabibu` archive contains:
+
 ```
 my-extension-1.0.0.tabibu
     manifest.toml
@@ -291,6 +297,7 @@ To sign packages, set `TABIBU_SIGN_KEY` to a base64-encoded Ed25519 private key 
 ## Graceful shutdown
 
 The Extension Runtime sends `{"type":"shutdown","grace_seconds":N}` on stdin. The SDK:
+
 1. Calls `OnShutdown` (30 s timeout)
 2. Writes `{"type":"drain_done"}` to stdout
 3. Cancels the context and exits 0

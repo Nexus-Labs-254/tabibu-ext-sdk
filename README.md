@@ -85,8 +85,6 @@ func (e *MyExtension) OnConfigUpdate(ctx context.Context, cfg sdk.Config) error 
 
 These are injected by the Extension Runtime directly into the child process environment at spawn time — this happens in both production and dev mode. You never set them yourself.
 
-The SDK's `godotenv.Load()` runs before reading any env var, so a `.env` file in your extension's working directory can supply values for standalone testing (running the binary outside of Tabibu).
-
 | Variable         | Description                                                                                                                                                                                                                                        |
 | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `EXT_NAME`       | Extension name (matches `manifest.toml`)                                                                                                                                                                                                           |

@@ -23,23 +23,31 @@ type PatientsService interface {
 	Register(ctx context.Context, req RegisterPatientRequest) (Patient, error)
 }
 
-// Patient is a minimal representation of a patient record as returned by
-// the Extension Runtime. Fields mirror the server's patients.models.Patient.
+// Patient is a patient record as returned by the Extension Runtime.
+// Fields mirror the server's patients.models.Patient JSON output.
 type Patient struct {
-	ID            string         `json:"id"`
-	BloodGroup    *string        `json:"blood_group,omitempty"`
-	AllergyStatus string         `json:"allergy_status"`
-	CreatedAt     string         `json:"created_at"`
-	Person        PatientPerson  `json:"person"`
+	ID            string        `json:"id"`
+	BloodGroup    *string       `json:"blood_group,omitempty"`
+	AllergyStatus string        `json:"allergy_status"`
+	CreatedAt     string        `json:"created_at"`
+	Person        PatientPerson `json:"person"`
 }
 
-// PatientPerson holds the demographic data associated with a patient.
+// PatientPerson holds the demographic and contact data for a patient.
+// Fields mirror the server's persons.models.Person JSON output.
 type PatientPerson struct {
-	GivenName  string `json:"given_name"`
-	FamilyName string `json:"family_name"`
-	Sex        string `json:"sex"`
-	Phone      string `json:"primary_phone,omitempty"`
-	Email      string `json:"email,omitempty"`
+	ID                 string  `json:"id"`
+	GivenName          string  `json:"given_name,omitempty"`
+	MiddleName         string  `json:"middle_name,omitempty"`
+	FamilyName         string  `json:"family_name,omitempty"`
+	Salutation         string  `json:"salutation,omitempty"`
+	Sex                string  `json:"sex"`
+	Birthdate          *string `json:"birthdate,omitempty"`
+	BirthdateEstimated bool    `json:"birthdate_estimated"`
+	PrimaryPhone       *string `json:"primary_phone,omitempty"`
+	AltPhone           *string `json:"alt_phone,omitempty"`
+	Email              *string `json:"email,omitempty"`
+	PhotoURL           *string `json:"photo_url,omitempty"`
 }
 
 // RegisterPatientRequest is the payload for registering a new patient.

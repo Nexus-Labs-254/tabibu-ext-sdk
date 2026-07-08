@@ -33,7 +33,7 @@ func newClient(baseURL, extName, apiKey string) *client {
 
 // refreshToken exchanges the API key for a JWT.
 func (c *client) refreshToken(ctx context.Context) error {
-	url := fmt.Sprintf("%s/v1/admin/extensions/%s/token", c.baseURL, c.extName)
+	url := fmt.Sprintf("%s/v1/extensions/%s/token", c.baseURL, c.extName)
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, nil)
 	if err != nil {
 		return err

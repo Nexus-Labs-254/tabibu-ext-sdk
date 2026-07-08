@@ -100,7 +100,7 @@ than hitting your extension port directly — that's what the proxy exists for.
 
 When your extension starts, the supervisor writes an API key to `EXT_DATA_DIR/.api_key`.
 The SDK reads it at startup and exchanges it for a JWT via
-`POST /v1/admin/extensions/:name/token` (the extension API key auth path, not the
+`POST /v1/api/extensions/:name/token` (the API-key-authenticated path, not the
 user JWT path).
 
 This JWT is signed with Tabibu's main `AUTH_JWT_SECRET` — not the extension WebView

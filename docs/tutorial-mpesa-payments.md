@@ -301,7 +301,7 @@ func fetchBillingRecord(ctx context.Context, orderID string) (*BillingRecord, er
 ```
 
 `sdk.HTTPClient()` sends `Authorization: Bearer <extension-jwt>` on every request.
-The JWT is issued by `POST /v1/admin/extensions/:name/token` (API key auth) and has
+The JWT is issued by `POST /v1/api/extensions/:name/token` (API key auth) and has
 a 1-hour TTL; `keepAlive` refreshes it at the 80% mark automatically.
 
 ---
@@ -334,7 +334,7 @@ The `.tabibu` archive must contain:
 tabibu extension install ./mpesa-payments-1.0.0.tabibu
 
 # Or via API (remote).
-curl -X POST https://hospital.com/v1/api/admin/extensions \
+curl -X POST https://hospital.com/v1/api/extensions \
   -H "Authorization: Bearer sk_..." \
   -H "Content-Type: application/json" \
   -d '{"source": "./mpesa-payments-1.0.0.tabibu"}'

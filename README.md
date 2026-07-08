@@ -83,7 +83,9 @@ func (e *MyExtension) OnConfigUpdate(ctx context.Context, cfg sdk.Config) error 
 
 ## Env vars
 
-These are injected by the Extension Runtime directly into the child process environment at spawn time — this happens in both production and dev mode. You never set them yourself.
+These are injected by the Extension Runtime directly into the child process environment at spawn time. You never set them yourself.
+
+For extension-specific secrets (API keys, passwords, credentials), declare them with empty defaults in `[extension.config]` in your manifest — the system admin fills them in via the Tabibu admin panel. They are pushed to your extension via `OnConfigUpdate` and readable at any time with `sdk.GetConfig()`. Config values are stored in the Tabibu DB and never written to environment variables.
 
 | Variable         | Description                                                                                                                                                                                                                                        |
 | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

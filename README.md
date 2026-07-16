@@ -32,7 +32,7 @@ Each message is a single JSON line (NDJSON). The SDK reads from `os.Stdin` and w
 ## Installation
 
 ```bash
-go get github.com/Nexus-Labs-254/tabibu-ext-sdk
+go get github.com/tabibumrs/tabibu-ext-sdk
 ```
 
 ---
@@ -46,7 +46,7 @@ import (
     "context"
     "log"
 
-    sdk "github.com/Nexus-Labs-254/tabibu-ext-sdk"
+    sdk "github.com/tabibumrs/tabibu-ext-sdk"
 )
 
 func main() {
@@ -106,8 +106,9 @@ Instead of calling Tabibu's HTTP APIs directly, use the service accessors. Calls
 ### `sdk.Patients()`
 
 ```go
-// List patients
-patients, err := sdk.Patients().List(ctx, "John")
+// List patients (first page, default page size — pass 0, 0 for both)
+page, err := sdk.Patients().List(ctx, "John", 0, 0)
+patients := page.Data // page.Total / page.TotalPages tell you if there's more
 
 // Get a single patient
 patient, err := sdk.Patients().Get(ctx, "uuid-here")

@@ -1,26 +1,60 @@
-package sdk
+// Package services holds one file per domain service the SDK exposes
+// (patients today, more as the Extension Runtime grows). The root sdk
+// package re-exports every type here via type aliases (see ../services.go)
+// so extension authors keep writing `sdk.Patient`, `sdk.Patients()`, etc. —
+// this package is an implementation detail, not something they import
+// directly.
+package services
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
 
-	"github.com/Nexus-Labs-254/tabibu-ext-sdk/internal"
+	"github.com/tabibumrs/tabibu-ext-sdk/internal"
 )
 
 // PatientsService provides read and write access to the patients domain.
 // Calls are routed through the stdio IPC channel to the Extension Runtime,
 // which forwards them to the server's patients module.
 type PatientsService interface {
-	// List returns patients whose name or ID matches query. Pass an empty
-	// string to return all patients.
-	List(ctx context.Context, query string) ([]Patient, error)
+	// List returns a page of patients whose name or phone matches query
+	// (pass an empty string to match all). page/perPage are 1-indexed;
+	// pass 0 for either to use the server's defaults (page 1, 20 per page).
+	// Check PatientsPage.TotalPages if you need every matching patient, not
+	// just one page.
+	List(ctx context.Context, query string, page, perPage int) (PatientsPage, error)
 
 	// Get returns a single patient by UUID.
 	Get(ctx context.Context, id string) (Patient, error)
 
 	// Register creates a new patient record.
 	Register(ctx context.Context, req RegisterPatientRequest) (Patient, error)
+}
+
+// PatientsPage is one page of a List call — mirrors the server's
+// {data, options.meta} paginated list envelope (see design.md §21 on the
+// server), flattened for SDK ergonomics rather than nesting Options/Meta.
+type PatientsPage struct {
+	Data       []Patient
+	Page       int
+	PerPage    int
+	Total      int64
+	TotalPages int
+}
+
+// patientsListResponse is the raw wire shape List unmarshals into before
+// flattening it into PatientsPage.
+type patientsListResponse struct {
+	Data    []Patient `json:"data"`
+	Options struct {
+		Meta struct {
+			Page       int   `json:"page"`
+			PerPage    int   `json:"per_page"`
+			Total      int64 `json:"total"`
+			TotalPages int   `json:"total_pages"`
+		} `json:"meta"`
+	} `json:"options"`
 }
 
 // Patient is a patient record as returned by the Extension Runtime.
@@ -74,17 +108,31 @@ type patientsService struct {
 
 var _ PatientsService = (*patientsService)(nil)
 
-func (s *patientsService) List(ctx context.Context, query string) ([]Patient, error) {
-	payload, _ := json.Marshal(map[string]string{"query": query})
+// NewPatientsService constructs the IPC-backed PatientsService. Called once
+// from the root sdk package during Run() — conn is unexported on
+// patientsService, so this constructor is the only way to build one from
+// outside the package.
+func NewPatientsService(conn *internal.Conn) PatientsService {
+	return &patientsService{conn: conn}
+}
+
+func (s *patientsService) List(ctx context.Context, query string, page, perPage int) (PatientsPage, error) {
+	payload, _ := json.Marshal(map[string]any{"query": query, "page": page, "per_page": perPage})
 	res, err := s.call(ctx, "list", payload)
 	if err != nil {
-		return nil, err
+		return PatientsPage{}, err
 	}
-	var patients []Patient
-	if err := json.Unmarshal(res, &patients); err != nil {
-		return nil, fmt.Errorf("patients.list: decode response: %w", err)
+	var wire patientsListResponse
+	if err := json.Unmarshal(res, &wire); err != nil {
+		return PatientsPage{}, fmt.Errorf("patients.list: decode response: %w", err)
 	}
-	return patients, nil
+	return PatientsPage{
+		Data:       wire.Data,
+		Page:       wire.Options.Meta.Page,
+		PerPage:    wire.Options.Meta.PerPage,
+		Total:      wire.Options.Meta.Total,
+		TotalPages: wire.Options.Meta.TotalPages,
+	}, nil
 }
 
 func (s *patientsService) Get(ctx context.Context, id string) (Patient, error) {

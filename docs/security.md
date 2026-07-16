@@ -70,7 +70,7 @@ import (
     "net/http"
     "strings"
 
-    sdk "github.com/Nexus-Labs-254/tabibu-ext-sdk"
+    sdk "github.com/tabibumrs/tabibu-ext-sdk"
 )
 
 func (e *Extension) requireAuth(c sdk.Ctx) (*sdk.TokenClaims, error) {
@@ -186,9 +186,10 @@ governance obligations as the core application.
    Log `patient_id` (a UUID) and `order_id` only.
 
 4. **Treat all service call results as sensitive.** `sdk.Patients().List()` with an
-   empty query returns all patients. Don't call it on a wide sweep unless you have a
-   real operational reason. Prefer `sdk.Patients().Get(ctx, id)` with a known ID from
-   the event payload.
+   empty query matches all patients (still returned one page at a time — see
+   `PatientsPage.TotalPages`). Don't page through a wide sweep unless you have a real
+   operational reason. Prefer `sdk.Patients().Get(ctx, id)` with a known ID from the
+   event payload.
 
 ---
 

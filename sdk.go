@@ -20,7 +20,8 @@ import (
 	"time"
 
 	"github.com/BryanMwangi/pine"
-	"github.com/Nexus-Labs-254/tabibu-ext-sdk/internal"
+	"github.com/tabibumrs/tabibu-ext-sdk/internal"
+	"github.com/tabibumrs/tabibu-ext-sdk/services"
 	"github.com/joho/godotenv"
 )
 
@@ -91,7 +92,7 @@ var (
 	_conn      *internal.Conn
 	_config    Config
 	_httpCli   *client
-	_patients  *patientsService
+	_patients  PatientsService
 	_jwtSecret string // EXT_JWT_SECRET injected by the supervisor; used by ValidateToken
 )
 
@@ -155,7 +156,7 @@ func Run(ext Extension) error {
 	}
 
 	// Initialise service clients backed by the IPC channel.
-	_patients = &patientsService{conn: _conn}
+	_patients = services.NewPatientsService(_conn)
 
 	// Build Pine HTTP server for WebView and extension-defined routes.
 	app := pine.New()

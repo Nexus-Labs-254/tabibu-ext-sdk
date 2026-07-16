@@ -1,4 +1,4 @@
-module github.com/Nexus-Labs-254/tabibu-ext-sdk
+module github.com/tabibumrs/tabibu-ext-sdk
 
 go 1.24
 

@@ -1,4 +1,6 @@
-github.com/BryanMwangi/pine v1.1.7 h1:7kBqO7OlBkF+MZZz0Bda/un73/yVpUHVyOK7FvGnwt8=
-github.com/BryanMwangi/pine v1.1.7/go.mod h1:yfO8j8e/St7qQmj3LkKNoZWZGqav2fkAJcDU6NACAp8=
+github.com/BryanMwangi/pine v1.1.8 h1:Ot7/s/EiMxOFsBex9St3poIBn/baf8z10WyE/VQxMqU=
+github.com/BryanMwangi/pine v1.1.8/go.mod h1:yfO8j8e/St7qQmj3LkKNoZWZGqav2fkAJcDU6NACAp8=
+github.com/golang-jwt/jwt/v5 v5.3.1 h1:kYf81DTWFe7t+1VvL7eS+jKFVWaUnK9cB1qbwn63YCY=
+github.com/golang-jwt/jwt/v5 v5.3.1/go.mod h1:fxCRLWMO43lRc8nhHWY6LGqRcf+1gQWArsqaEUEa5bE=
 github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=
 github.com/joho/godotenv v1.5.1/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwAbqwq4=

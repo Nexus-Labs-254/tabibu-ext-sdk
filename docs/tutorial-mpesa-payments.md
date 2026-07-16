@@ -108,7 +108,7 @@ import (
     "net/http"
     "sync"
 
-    sdk "github.com/Nexus-Labs-254/tabibu-ext-sdk"
+    sdk "github.com/tabibumrs/tabibu-ext-sdk"
 )
 
 func main() {
